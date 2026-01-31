@@ -19,10 +19,10 @@ input, button {
 }
 
 button {
-  background: #ff9800;
+  background: orange;
   border: none;
-  cursor: pointer;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 #memeBox {
@@ -56,9 +56,10 @@ button {
 
 <input type="file" id="imgInput"><br>
 <input type="text" id="topText" placeholder="Üst yazı">
-<input type="text" id="bottomText" placeholder="Alt yazı">
-<br>
+<input type="text" id="bottomText" placeholder="Alt yazı"><br>
+
 <button onclick="createMeme()">Təqdim et</button>
+<button onclick="downloadMeme()">Yüklə</button>
 
 <div id="memeBox">
   <img id="memeImg">
@@ -66,16 +67,12 @@ button {
   <div class="text bottom" id="bottom"></div>
 </div>
 
+<canvas id="canvas" style="display:none;"></canvas>
+
 <script>
 function createMeme() {
   const imgInput = document.getElementById("imgInput");
   const memeImg = document.getElementById("memeImg");
-
-  const top = document.getElementById("top");
-  const bottom = document.getElementById("bottom");
-
-  const topText = document.getElementById("topText").value;
-  const bottomText = document.getElementById("bottomText").value;
 
   if (!imgInput.files[0]) {
     alert("Şəkil seç!");
@@ -83,14 +80,45 @@ function createMeme() {
   }
 
   const reader = new FileReader();
-
-  reader.onload = function() {
-    memeImg.src = reader.result;
-    top.innerText = topText;
-    bottom.innerText = bottomText;
-  }
-
+  reader.onload = () => memeImg.src = reader.result;
   reader.readAsDataURL(imgInput.files[0]);
+
+  document.getElementById("top").innerText =
+    document.getElementById("topText").value;
+
+  document.getElementById("bottom").innerText =
+    document.getElementById("bottomText").value;
+}
+
+function downloadMeme() {
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const img = document.getElementById("memeImg");
+
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  ctx.drawImage(img, 0, 0);
+
+  ctx.font = "30px Arial";
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2;
+  ctx.textAlign = "center";
+
+  const topText = document.getElementById("topText").value;
+  const bottomText = document.getElementById("bottomText").value;
+
+  ctx.strokeText(topText, canvas.width/2, 40);
+  ctx.fillText(topText, canvas.width/2, 40);
+
+  ctx.strokeText(bottomText, canvas.width/2, canvas.height - 20);
+  ctx.fillText(bottomText, canvas.width/2, canvas.height - 20);
+
+  const link = document.createElement("a");
+  link.download = "meme.png";
+  link.href = canvas.toDataURL();
+  link.click();
 }
 </script>
 
