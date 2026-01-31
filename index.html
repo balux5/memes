@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<title>Meme Generator</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #222;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+input, button {
+  padding: 8px;
+  margin: 5px;
+}
+
+button {
+  background: #ff9800;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+#memeBox {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+#memeImg {
+  max-width: 350px;
+  border-radius: 10px;
+}
+
+.text {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px black;
+}
+
+.top { top: 10px; }
+.bottom { bottom: 10px; }
+</style>
+</head>
+<body>
+
+<h1>😂 Meme Yaradan</h1>
+
+<input type="file" id="imgInput"><br>
+<input type="text" id="topText" placeholder="Üst yazı">
+<input type="text" id="bottomText" placeholder="Alt yazı">
+<br>
+<button onclick="createMeme()">Təqdim et</button>
+
+<div id="memeBox">
+  <img id="memeImg">
+  <div class="text top" id="top"></div>
+  <div class="text bottom" id="bottom"></div>
+</div>
+
+<script>
+function createMeme() {
+  const imgInput = document.getElementById("imgInput");
+  const memeImg = document.getElementById("memeImg");
+
+  const top = document.getElementById("top");
+  const bottom = document.getElementById("bottom");
+
+  const topText = document.getElementById("topText").value;
+  const bottomText = document.getElementById("bottomText").value;
+
+  if (!imgInput.files[0]) {
+    alert("Şəkil seç!");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function() {
+    memeImg.src = reader.result;
+    top.innerText = topText;
+    bottom.innerText = bottomText;
+  }
+
+  reader.readAsDataURL(imgInput.files[0]);
+}
+</script>
+
+</body>
+</html>
